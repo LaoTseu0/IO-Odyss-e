@@ -1,6 +1,4 @@
-@import "tailwindcss";
-
-:root { --void:#02030a; --ink:#f5f6ff; --muted:#9599ae; --cyan:#78fff0; }
+:root { --void:#02030a; --ink:#f5f6ff; --muted:#9599ae; --cyan:#78fff0; --font-geist-sans:Inter,Arial,sans-serif; --font-geist-mono:"Courier New",monospace; }
 * { box-sizing:border-box; }
 html { scroll-behavior:smooth; scrollbar-width:thin; scrollbar-color:#506378 #050710; }
 body { margin:0; background:var(--void); color:var(--ink); font-family:var(--font-geist-sans),Arial,sans-serif; }
