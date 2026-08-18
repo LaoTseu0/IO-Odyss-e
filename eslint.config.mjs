@@ -32,6 +32,15 @@ const eslintConfig = defineConfig([
       },
     },
   },
+  {
+    files: ["app/rendering/**/*.tsx"],
+    rules: {
+      // React Three Fiber JSX describes a Three.js scene graph, not DOM nodes.
+      "react/no-unknown-property": "off",
+      // useFrame is intentionally imperative and mutates Three.js objects outside React.
+      "react-hooks/immutability": "off",
+    },
+  },
 ]);
 
 export default eslintConfig;
