@@ -32,6 +32,15 @@ const eslintConfig = defineConfig([
       },
     },
   },
+  {
+    files: ["app/page.tsx"],
+    rules: {
+      // React Three Fiber étend JSX avec les propriétés natives de Three.js.
+      "react/no-unknown-property": "off",
+      // La boucle de rendu R3F anime volontairement les objets Three.js en place.
+      "react-hooks/immutability": "off",
+    },
+  },
 ]);
 
 export default eslintConfig;
