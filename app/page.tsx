@@ -145,7 +145,7 @@ export default function Home() {
           <div>{current.payload.map((item) => <i key={item}>{item}</i>)}</div>
         </div>
 
-        <article className={`story-card side-${active % 2 ? "left" : "right"}`} key={current.id} aria-hidden="true">
+        <article className={`story-card side-${active % 2 ? "left" : "right"} ${introGone ? "" : "is-deferred"}`} key={current.id} aria-hidden="true">
           <div className="story-number">{current.index}</div><span className="micro-label">{current.eyebrow}</span>
           <h2>{current.title}</h2><h3>{current.subtitle}</h3><p>{current.body}</p>
           <div className="insight"><span>À RETENIR</span><p>{current.insight}</p></div>
