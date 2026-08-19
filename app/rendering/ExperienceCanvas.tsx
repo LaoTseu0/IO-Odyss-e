@@ -514,7 +514,7 @@ function IoCore() {
   });
 
   return (
-    <group ref={root} position={[0, 0, 1.1]} scale={0.72}>
+    <group ref={root} position={[0, 0, 1.1]} scale={0.54}>
       <group ref={livingCore}>
         <mesh>
           <icosahedronGeometry args={[0.52, 5]} />
