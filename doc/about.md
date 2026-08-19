@@ -1,15 +1,8 @@
-# Architecture du projet 3d-io
+# À propos de 3d-io
 
 ## Objet du document
 
-Ce document décrit l'organisation actuelle de l'application, ses flux principaux et les points à améliorer avant une éventuelle ouverture du projet en open source.
-
-Deux principes doivent guider les prochaines évolutions :
-
-1. Le contenu narratif doit pouvoir évoluer indépendamment de la logique applicative.
-2. Le code doit rester simple à lire et à vérifier humainement. Les commentaires doivent expliquer la raison d'être des décisions non évidentes, pas paraphraser le code.
-
-Le mot d'ordre de la future refonte est la simplicité. Une abstraction ne doit être introduite que si elle rend le projet réellement plus facile à comprendre, tester ou faire évoluer.
+Ce document décrit l'organisation actuelle de l'application et ses principaux flux d'exécution. Les objectifs et la proposition de refonte sont documentés séparément dans `doc/refactoring.md`.
 
 ## Vue d'ensemble
 
@@ -103,24 +96,7 @@ Chaque chapitre contient notamment :
 - les informations affichées dans le HUD ;
 - une description de l'entité 3D associée.
 
-La séparation actuelle est déjà utile, mais le contenu reste défini dans un fichier TypeScript. À terme, le contenu éditorial devrait être déplacé vers un format indépendant de la logique métier, par exemple un fichier JSON validé au chargement.
-
-Une cible simple pourrait être :
-
-```text
-app/
-├── content/
-│   └── stages.json
-├── domain/
-│   ├── stage.ts
-│   └── journey.ts
-├── state/
-│   └── experienceStore.ts
-├── ui/
-└── rendering/
-```
-
-Le schéma TypeScript resterait responsable du typage et de la validation, tandis que le JSON ne contiendrait que des données éditoriales.
+La séparation actuelle est déjà utile, mais le contenu reste défini dans un fichier TypeScript et dépend donc encore du code applicatif.
 
 ## État partagé
 
@@ -291,63 +267,3 @@ Les principaux points de vigilance sont :
 - la borne maximale du chapitre est codée en dur dans le store ;
 - `entityLabel` et `entityInfo` sont déclarés mais non affichés ;
 - la variable CSS `--journey` est mise à jour mais non utilisée.
-
-## Direction proposée pour la refonte
-
-La refonte doit rester progressive et produire de petits changements faciles à relire.
-
-Ordre recommandé :
-
-1. Définir un modèle `Stage` indépendant de React et Three.js.
-2. Déplacer les données narratives vers `app/content/stages.json`.
-3. Ajouter une validation simple du contenu au démarrage ou pendant le build.
-4. Remplacer l'association des entités par index par un identifiant explicite.
-5. Supprimer les valeurs codées en dur dérivables de `stages.length`.
-6. Découper `ExperienceCanvas.tsx` par responsabilité seulement lorsque cela améliore réellement la lecture.
-7. Ajouter des tests ciblés à chaque extraction.
-
-Un découpage raisonnable du rendu pourrait devenir :
-
-```text
-app/rendering/
-├── ExperienceCanvas.tsx
-├── JourneyWorld.tsx
-├── entities/
-│   ├── StageEntity.tsx
-│   └── IoCore.tsx
-├── effects/
-│   └── BloomPipeline.tsx
-└── shaders/
-    └── ioCoreShaders.ts
-```
-
-Ce découpage reste volontairement limité. Il faut éviter un fichier par fonction, les couches génériques prématurées et les abstractions qui obligeraient un lecteur à naviguer dans de nombreux fichiers pour comprendre un flux simple.
-
-## Politique de commentaires
-
-Les commentaires doivent être utilisés lorsqu'ils répondent à une question que le code seul ne peut pas résoudre clairement :
-
-- pourquoi une lecture impérative du store est nécessaire dans `useFrame` ;
-- pourquoi le rendu du post-traitement utilise une priorité spécifique ;
-- pourquoi une valeur de performance ou une limite visuelle a été choisie ;
-- pourquoi un fallback ou une adaptation d'accessibilité existe.
-
-Les commentaires suivants sont à éviter :
-
-```ts
-// Incrémente l'index
-index += 1;
-```
-
-Le nommage, les types et les fonctions courtes doivent expliquer le « quoi ». Les commentaires doivent conserver le contexte et expliquer le « pourquoi ».
-
-## Critères de réussite
-
-La refonte sera réussie si :
-
-- une personne peut modifier le récit sans toucher à la logique de rendu ;
-- ajouter ou réordonner un chapitre ne casse pas silencieusement son entité 3D ;
-- les responsabilités importantes sont repérables depuis l'arborescence ;
-- les fonctions non triviales expliquent leurs contraintes et leur raison d'être ;
-- chaque commit reste petit, testable et facile à examiner ;
-- le comportement visuel et l'accessibilité existants sont préservés.
