@@ -14,13 +14,14 @@ Le principe central de l'expérience est le suivant : le défilement vertical de
 index.html
 └── app/main.tsx                  Point d'entrée React
     └── app/page.tsx              Orchestrateur de l'expérience
-        ├── experience/stages.ts  Contenu des huit chapitres
-        ├── experience/store.ts   État partagé Zustand
-        ├── experience/journey.ts Conversion scroll → position 3D
+        ├── content/stages.json   Contenu des huit chapitres
+        ├── state/                État partagé Zustand
+        ├── domain/               Modèle et conversion scroll → position 3D
         ├── rendering/
         │   └── ExperienceCanvas.tsx
         │       ├── scène Three.js
-        │       ├── entités des chapitres
+        │       ├── monde et caméra
+        │       ├── une entité par composant
         │       ├── shaders
         │       └── post-traitement
         └── globals.css           Layout, HUD, responsive et accessibilité
@@ -77,7 +78,7 @@ Les boutons de navigation utilisent `scrollIntoView` pour rejoindre la section c
 
 ## Contenu narratif
 
-`app/experience/stages.ts` contient aujourd'hui les huit chapitres :
+`app/content/stages.json` contient aujourd'hui les huit chapitres :
 
 1. Donnée brute
 2. Tokens et vecteurs
@@ -96,11 +97,11 @@ Chaque chapitre contient notamment :
 - les informations affichées dans le HUD ;
 - une description de l'entité 3D associée.
 
-La séparation actuelle est déjà utile, mais le contenu reste défini dans un fichier TypeScript et dépend donc encore du code applicatif.
+Le fichier reste indépendant de React, Zustand et Three.js. `app/content/stages.ts` le valide au démarrage et expose des données typées au reste de l'application.
 
 ## État partagé
 
-`app/experience/store.ts` utilise Zustand pour partager quatre informations :
+`app/state/experienceStore.ts` utilise Zustand pour partager quatre informations :
 
 ```ts
 progress
@@ -121,7 +122,7 @@ Dans les boucles Three.js, `useExperienceStore.getState()` permet de lire l'éta
 
 ## Déplacement horizontal
 
-`app/experience/journey.ts` contient la conversion mathématique centrale :
+`app/domain/journey.ts` contient la conversion mathématique centrale :
 
 ```text
 position X = progression × (nombre de chapitres - 1) × espacement
@@ -131,7 +132,7 @@ Chaque chapitre est actuellement espacé de `5.2` unités sur l'axe X. La foncti
 
 ## Scène 3D
 
-`app/rendering/ExperienceCanvas.tsx` concentre le moteur graphique. Il utilise :
+Le dossier `app/rendering/` répartit le moteur graphique par responsabilité. `ExperienceCanvas.tsx` initialise le renderer, tandis que `JourneyWorld.tsx` orchestre la caméra et les entités. Il utilise :
 
 - React Three Fiber pour décrire la scène avec React ;
 - Three.js pour les objets, matériaux et shaders ;
@@ -238,7 +239,7 @@ Le Canvas est masqué aux technologies d'assistance car son contenu visuel est r
 
 ## Tests
 
-`app/experience/experience.test.ts` couvre actuellement :
+Les tests de `app/content/`, `app/domain/` et `app/state/` couvrent actuellement :
 
 - le nombre, l'ordre et l'unicité des chapitres ;
 - la présence du contenu pédagogique ;
@@ -262,8 +263,7 @@ L'organisation actuelle est saine pour une expérience de cette taille :
 
 Les principaux points de vigilance sont :
 
-- `ExperienceCanvas.tsx` concentre les entités, shaders, effets et orchestration 3D ;
-- les entités sont associées aux chapitres par leur index ;
-- la borne maximale du chapitre est codée en dur dans le store ;
+- les shaders du cœur IO restent la partie la plus spécialisée du rendu ;
+- les réglages visuels procéduraux ne bénéficient pas encore de tests de non-régression visuelle ;
 - `entityLabel` et `entityInfo` sont déclarés mais non affichés ;
 - la variable CSS `--journey` est mise à jour mais non utilisée.
