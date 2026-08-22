@@ -13,7 +13,6 @@ Le mot d'ordre est la simplicité. Une abstraction ne doit être introduite que 
 
 - Préférer des fonctions courtes et explicites aux abstractions génériques.
 - Conserver des responsabilités visibles depuis l'arborescence.
-- Effectuer la refonte par petits commits faciles à relire.
 - Préserver le comportement visuel, les performances et l'accessibilité.
 - Ajouter des tests ciblés avec chaque extraction de logique.
 - Ne pas multiplier les fichiers lorsque cela disperse une logique simple.
