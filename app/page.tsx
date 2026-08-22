@@ -2,8 +2,8 @@ import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react"
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { stages } from "./experience/stages";
-import { useExperienceStore } from "./experience/store";
+import { stages } from "./content/stages";
+import { useExperienceStore } from "./state/experienceStore";
 
 const ExperienceCanvas = lazy(() =>
   import("./rendering/ExperienceCanvas").then((module) => ({ default: module.ExperienceCanvas })),
@@ -151,7 +151,7 @@ export default function Home() {
           <div className="insight"><span>À RETENIR</span><p>{current.insight}</p></div>
         </article>
 
-        {active === 2 && <AttentionLab />}
+        {current.id === "attention" && <AttentionLab />}
 
         <nav className="journey-map" aria-label="Étapes du voyage">
           <span className="map-line" aria-hidden="true"><i ref={progressBarRef} /></span>
